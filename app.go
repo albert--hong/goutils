@@ -24,22 +24,22 @@ type AppEnv struct {
 type Config struct {
 }
 
-func main() {
-	// 初始化运行环境
-	env := initialEnv()
+var (
+	env AppEnv
+)
 
+func main() {
 	// TODO: 主函数主体
 
 	// 结束运行环境
-	destroyEnv(env)
+	destroy()
 }
 
-// initialEnv 的目标是初始化运行环境
-func initialEnv() *AppEnv {
-	env := AppEnv{}
-	env.AppName = "app"
+// init 目标是初始化运行环境，默认执行
+func init() {
+	env.AppName = "default_app"
 	env.TodayStr = time.Now().Format("2006-01-02")
-	// 1. 解析命令行
+	// 1. 解析命令行。
 	var configPath = "./conf/" + env.AppName + ".yaml"
 	flag.StringVar(&configPath, "conf_file", configPath, "Application's configure file!")
 	flag.Parse()
@@ -64,11 +64,10 @@ func initialEnv() *AppEnv {
 	}
 	// 4. 其他初始化内容。包括打开文件等
 
-	return &env
 }
 
 // destroy 销毁App运行环境
-func destroyEnv(env *AppEnv) {
+func destroy() {
 	// 关闭所有文件
 	env.LogFile.Sync()
 	env.LogFile.Close()
